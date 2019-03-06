@@ -13,7 +13,7 @@ namespace CodeChallengeV2.Models
         /// <summary>
         /// Decoded battery value of port 20
         /// </summary>
-        public int? Battery { get; internal set; }
+        public int? Battery { get; set; }
         /// <summary>
         /// Decoded value of port 40
         /// </summary>
@@ -33,6 +33,6 @@ namespace CodeChallengeV2.Models
         /// <summary>
         /// Decoded humidity value of port 43
         /// </summary>
-        public double? Humidity { get; internal set; }
+        public double? Humidity { get; set; }
     }
 }
