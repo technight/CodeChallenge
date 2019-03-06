@@ -1,0 +1,47 @@
+{
+  "graphs": [
+    {
+      "type": "network",
+      "label": "LoraWAN network of devices and gateways",
+      "nodes": [
+        {
+          "id": "dev001",
+          "type": "Device",
+          "label": "Device 1"
+        },
+        {
+          "id": "dev002",
+          "type": "Device",
+          "label": "Device 2"
+        },
+        {
+          "id": "dev003",
+          "type": "Device",
+          "label": "Device 3"
+        },
+        {
+          "id": "gw001",
+          "type": "Gateway",
+          "label": "Gateway 1"
+        }
+      ],
+      "edges": [
+        {
+          "source": "dev003",
+          "target": "gw001",
+          "relation": "is_connected_to"
+        },
+        {
+          "source": "dev002",
+          "target": "gw001",
+          "relation": "is_connected_to"
+        },
+        {
+          "source": "dev001",
+          "target": "gw001",
+          "relation": "is_connected_to"
+        }
+      ]
+    }
+  ]
+}

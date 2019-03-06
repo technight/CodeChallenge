@@ -1,0 +1,219 @@
+swagger: '2.0'
+info:
+  version: v1
+  title: Delegate Code Challenge 2019 API.
+paths:
+  /api/sensors/geocode:
+    post:
+      tags:
+        - Geocode
+      summary: Looks up country code from Longitude and Latitude
+      operationId: CountryNamePostAsync
+      consumes:
+        - application/json-patch+json
+        - application/json
+        - text/json
+        - application/*+json
+      produces: []
+      parameters:
+        - name: body
+          in: body
+          description: Sensor identification and GPS position in Longitude and Latitude.
+          required: false
+          schema:
+            uniqueItems: false
+            type: array
+            items:
+              $ref: '#/definitions/GeocodePayload'
+      responses:
+        '200':
+          description: Success
+          schema:
+            uniqueItems: false
+            type: array
+            items:
+              type: string
+  /api/networkplanning/simulate:
+    post:
+      tags:
+        - NetworkPlanning
+      summary: 'Detects critical gateways in the network. A critial gateway is a gateway that, if missing, would leave devices unable to connect.'
+      operationId: NetworkPlanningPostAsync
+      consumes:
+        - application/json-patch+json
+        - application/json
+        - text/json
+        - application/*+json
+      produces: []
+      parameters:
+        - name: body
+          in: body
+          description: Graph containing verticies and edges of a LoRaWAN network topology.
+          required: false
+          schema:
+            $ref: '#/definitions/NetworkGraph'
+      responses:
+        '200':
+          description: Success
+          schema:
+            uniqueItems: false
+            type: array
+            items:
+              $ref: '#/definitions/Node'
+  /api/sensors/parse:
+    post:
+      tags:
+        - Sensor
+      summary: Decodes raw DigitalMatter SensorNode payloads.
+      description: 'Expects a list of raw SensorNode payloads, should output decoded and parsed sensor data.'
+      operationId: SensorsParsePostAsync
+      consumes:
+        - application/json-patch+json
+        - application/json
+        - text/json
+        - application/*+json
+      produces: []
+      parameters:
+        - name: body
+          in: body
+          description: IoT device payload and identification.
+          required: false
+          schema:
+            uniqueItems: false
+            type: array
+            items:
+              $ref: '#/definitions/SensorPayload'
+      responses:
+        '200':
+          description: Success
+          schema:
+            uniqueItems: false
+            type: array
+            items:
+              $ref: '#/definitions/SensorPayloadDecoded'
+definitions:
+  GeocodePayload:
+    description: Geocode payload from the Digital Matter SensorNode.
+    type: object
+    properties:
+      long:
+        description: 'Longitude of the device, as a string.'
+        type: string
+        example: '12.484492'
+      lat:
+        description: 'DeviceLatitude of the device, as a string.'
+        type: string
+        example: '55.781619'
+      devEUI:
+        description: 'Device EUI, LoRaWAN devices have a 64 bit unique identifier (DevEUI) that is assigned to the device by the chip manufacturer.'
+        type: string
+        example: '1234'
+      time:
+        format: date-time
+        description: The time the sensor reading was recorded.
+        type: string
+        example: '2018-06-04T15:17:23.433+02:00'
+  NetworkGraph:
+    type: object
+    properties:
+      graphs:
+        uniqueItems: false
+        type: array
+        items:
+          $ref: '#/definitions/Graph'
+  Graph:
+    type: object
+    properties:
+      type:
+        type: string
+      label:
+        type: string
+      nodes:
+        uniqueItems: false
+        type: array
+        items:
+          $ref: '#/definitions/Node'
+      edges:
+        uniqueItems: false
+        type: array
+        items:
+          $ref: '#/definitions/Edge'
+  Node:
+    type: object
+    properties:
+      id:
+        type: string
+      label:
+        type: string
+      type:
+        type: string
+  Edge:
+    type: object
+    properties:
+      source:
+        type: string
+      target:
+        type: string
+      relation:
+        type: string
+  SensorPayload:
+    description: Sensor payload from the Digital Matter SensorNode.
+    type: object
+    properties:
+      fPort:
+        format: int32
+        description: The LoraWAN Port used for the reading. The first ID is given by the LoRaWAN Port.
+        type: integer
+        example: '43'
+      data:
+        description: 'A hexidecimal representation of the data payload, data sheet defines delimiting values and lengths of payloads. Little Endian.'
+        type: string
+        example: a2083714df12
+      devEUI:
+        description: 'Device EUI, LoRaWAN devices have a 64 bit unique identifier (DevEUI) that is assigned to the device by the chip manufacturer.'
+        type: string
+        example: '1234'
+      time:
+        format: date-time
+        description: The time the sensor reading was recorded.
+        type: string
+        example: '2018-06-04T15:17:23.433+02:00'
+  SensorPayloadDecoded:
+    description: Decoded sensor data from the Digital Matter SensorNode.
+    type: object
+    properties:
+      battery:
+        format: int32
+        description: Decoded battery value of port 20
+        type: integer
+        readOnly: true
+      tempInternal:
+        format: double
+        description: Decoded value of port 40
+        type: number
+      tempRed:
+        format: double
+        description: Decoded value of port 41
+        type: number
+      tempBlue:
+        format: double
+        description: Decoded value of port 42
+        type: number
+      tempHumidity:
+        format: double
+        description: Decoded temperature value of port 43
+        type: number
+      humidity:
+        format: double
+        description: Decoded humidity value of port 43
+        type: number
+        readOnly: true
+      devEUI:
+        description: 'Device EUI, LoRaWAN devices have a 64 bit unique identifier (DevEUI) that is assigned to the device by the chip manufacturer.'
+        type: string
+        example: '1234'
+      time:
+        format: date-time
+        description: The time the sensor reading was recorded.
+        type: string
+        example: '2018-06-04T15:17:23.433+02:00'
